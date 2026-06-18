@@ -86,3 +86,16 @@ fig_filt = make_line(
     title="Ventes filtrées"
 )
 st.plotly_chart(fig_filt, use_container_width=True)
+
+
+
+# --- Section: Paramètres d'URL ---
+
+# Écrit les filtres courants dans l'URL (query string)
+# L'URL du navigateur se met à jour automatiquement
+st.query_params["categorie"] = ",".join(f_cats)
+st.query_params["date_min"] = str(dmin)
+st.query_params["date_max"] = str(dmax)
+
+# Affiche les paramètres d'URL pour vérifier
+st.caption(f"🔗 Paramètres d'URL : {dict(st.query_params)}")
