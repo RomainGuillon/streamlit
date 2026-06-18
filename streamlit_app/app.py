@@ -31,3 +31,20 @@ fig_line = px.line(data, x="date", y="ventes", color="categorie",
                    title="Ventes journalières")
 # Affiche le graphique dans l'application Streamlit
 st.plotly_chart(fig_line, use_container_width=True)
+
+# --- Section: Graphiques réutilisables ---
+from utils.charts import make_line, make_bar
+
+# Affiche une selectbox pour choisir le type de graphique
+choix = st.selectbox("Type de graphique", ["Courbe", "Barres"])
+
+# Selon le choix, génère la figure correspondante avec le style cohérent
+if choix == "Courbe":
+    fig = make_line(data, x="date", y="ventes", color="categorie",
+                    title="Ventes — courbe")
+else:
+    fig = make_bar(data, x="date", y="ventes", color="categorie",
+                   title="Ventes — barres")
+
+# Affiche le graphique dans Streamlit
+st.plotly_chart(fig, use_container_width=True)
