@@ -132,10 +132,13 @@ st.download_button("📦 Exporter le rapport (.zip)", data=buf.getvalue(), file_
 
 params = st.query_params
 
-# Lire la catégorie dans l'URL, sinon prendre la première disponible
-default_cat = params.get("categorie", cats[0])
+# Lire la catégorie dans l'URL — peut être une valeur unique ou une liste jointe par ","
+raw = params.get("categorie", cats[0])
+default_cat = raw.split(",")[0] if raw else cats[0]
+if default_cat not in cats:
+    default_cat = cats[0]
 
-# Utiliser cette valeur comme sélection par défaut
+# Utiliser cette valeur comme sélection par défaut pour le permalien
 cat = st.selectbox("Catégorie", options=cats, index=cats.index(default_cat))
 
 st.text_input("🔗 Permalien", value=f"http://localhost:8501/?categorie={cat}", disabled=True)
