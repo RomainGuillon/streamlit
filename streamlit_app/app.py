@@ -105,24 +105,32 @@ st.caption(f"🔗 Paramètres d'URL : {dict(st.query_params)}")
 
 
 
-# 1. Générer l'image PNG à partir de la figure Plotly (nécessite kaleido)
-png = fig.to_image(format="png", scale=2)
-
-# 2. Proposer le téléchargement de l'image via un bouton Streamlit
-st.download_button(
-    "📷 Télécharger le graphique (PNG)",
-    data=png,
-    file_name="graphique.png",
-    mime="image/png"
-)
+# 1. Générer l'image PNG à partir de la figure Plotly (nécessite kaleido + Chrome)
+try:
+    png = fig.to_image(format="png", scale=2)
+    st.download_button(
+        "📷 Télécharger le graphique (PNG)",
+        data=png,
+        file_name="graphique.png",
+        mime="image/png"
+    )
+except Exception:
+    st.info("Export PNG non disponible dans cet environnement (kaleido/Chrome requis).")
 
 # 1. Créer un tampon mémoire pour stocker l'archive ZIP
 buf = io.BytesIO()
+try:
+    png_filt = fig_filt.to_image(format="png", scale=2)
+    png_disponible = True
+except Exception:
+    png_disponible = False
+
 with zipfile.ZipFile(buf, "w") as zf:
     # 2. Ajouter le CSV des données filtrées
     zf.writestr("data_filtre.csv", df_filtered.to_csv(index=False))
-    # 3. Ajouter le graphique Plotly au format PNG
-    zf.writestr("graphique.png", fig_filt.to_image(format="png", scale=2))
+    # 3. Ajouter le graphique Plotly au format PNG (si kaleido disponible)
+    if png_disponible:
+        zf.writestr("graphique.png", png_filt)
     # 4. Ajouter un fichier README horodaté
     zf.writestr("README.txt", "Rapport exporté depuis l'application Streamlit — "+time.strftime("%Y-%m-%d %H:%M:%S"))
 
