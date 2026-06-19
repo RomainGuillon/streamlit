@@ -130,4 +130,12 @@ with zipfile.ZipFile(buf, "w") as zf:
 st.download_button("📦 Exporter le rapport (.zip)", data=buf.getvalue(), file_name="rapport.zip", mime="application/zip")
 
 
+params = st.query_params
+
+# Lire la catégorie dans l'URL, sinon prendre la première disponible
+default_cat = params.get("categorie", cats[0])
+
+# Utiliser cette valeur comme sélection par défaut
+cat = st.selectbox("Catégorie", options=cats, index=cats.index(default_cat))
+
 st.text_input("🔗 Permalien", value=f"http://localhost:8501/?categorie={cat}", disabled=True)
